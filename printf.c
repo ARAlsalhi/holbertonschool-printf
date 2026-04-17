@@ -142,8 +142,6 @@ int _printf(const char *format, ...)
 						count += _putchar_buffer(&buffer, ' ');
 					if (hash_flag)
 						count += _putchar_buffer(&buffer, '#');
-					if (length_mod != '\0')
-						count += _putchar_buffer(&buffer, length_mod);
 					count += _putchar_buffer(&buffer, *format);
 					break;
 			}
