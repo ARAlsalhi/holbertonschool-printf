@@ -29,5 +29,9 @@ int print_hex_lower(unsigned int n, buffer_t *buffer);
 int print_hex_upper(unsigned int n, buffer_t *buffer);
 int print_string_custom(char *string, buffer_t *buffer);
 int print_pointer(void *ptr, buffer_t *buffer);
+int print_num_flags(int n, int plus_flag, int space_flag, buffer_t *buffer);
+int print_octal_flag(unsigned int n, int hash_flag, buffer_t *buffer);
+int print_hex_lower_flag(unsigned int n, int hash_flag, buffer_t *buffer);
+int print_hex_upper_flag(unsigned int n, int hash_flag, buffer_t *buffer);
 
 #endif

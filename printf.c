@@ -10,6 +10,7 @@ int _printf(const char *format, ...)
 {
 	va_list args;
 	int count = 0;
+	int plus_flag, space_flag, hash_flag;
 	buffer_t buffer;
 
 	buffer.index = 0;
@@ -31,6 +32,28 @@ int _printf(const char *format, ...)
 				return (-1);
 			}
 
+			plus_flag = 0;
+			space_flag = 0;
+			hash_flag = 0;
+
+			while (*format == '+' || *format == ' ' || *format == '#')
+			{
+				if (*format == '+')
+					plus_flag = 1;
+				else if (*format == ' ')
+					space_flag = 1;
+				else if (*format == '#')
+					hash_flag = 1;
+
+				format++;
+			}
+
+			if (*format == '\0')
+			{
+				va_end(args);
+				return (-1);
+			}
+
 			switch (*format)
 			{
 				case 'c':
@@ -44,7 +67,8 @@ int _printf(const char *format, ...)
 					break;
 				case 'd':
 				case 'i':
-					count += print_num(va_arg(args, int), &buffer);
+					count += print_num_flags(va_arg(args, int), plus_flag,
+						space_flag, &buffer);
 					break;
 				case '%':
 					count += _putchar_buffer(&buffer, '%');
@@ -56,19 +80,28 @@ int _printf(const char *format, ...)
 					count += print_unsigned(va_arg(args, unsigned int), &buffer);
 					break;
 				case 'o':
-					count += print_octal(va_arg(args, unsigned int), &buffer);
+					count += print_octal_flag(va_arg(args, unsigned int),
+						hash_flag, &buffer);
 					break;
 				case 'x':
-					count += print_hex_lower(va_arg(args, unsigned int), &buffer);
+					count += print_hex_lower_flag(va_arg(args, unsigned int),
+						hash_flag, &buffer);
 					break;
 				case 'X':
-					count += print_hex_upper(va_arg(args, unsigned int), &buffer);
+					count += print_hex_upper_flag(va_arg(args, unsigned int),
+						hash_flag, &buffer);
 					break;
 				case 'p':
 					count += print_pointer(va_arg(args, void *), &buffer);
 					break;
 				default:
 					count += _putchar_buffer(&buffer, '%');
+					if (plus_flag)
+						count += _putchar_buffer(&buffer, '+');
+					if (space_flag)
+						count += _putchar_buffer(&buffer, ' ');
+					if (hash_flag)
+						count += _putchar_buffer(&buffer, '#');
 					count += _putchar_buffer(&buffer, *format);
 					break;
 			}
