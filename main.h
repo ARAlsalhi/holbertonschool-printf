@@ -33,5 +33,10 @@ int print_num_flags(int n, int plus_flag, int space_flag, buffer_t *buffer);
 int print_octal_flag(unsigned int n, int hash_flag, buffer_t *buffer);
 int print_hex_lower_flag(unsigned int n, int hash_flag, buffer_t *buffer);
 int print_hex_upper_flag(unsigned int n, int hash_flag, buffer_t *buffer);
+int print_long_num(long int n, buffer_t *buffer);
+int print_ulong(unsigned long int n, buffer_t *buffer);
+int print_ulong_octal(unsigned long int n, buffer_t *buffer);
+int print_ulong_hex_lower(unsigned long int n, buffer_t *buffer);
+int print_ulong_hex_upper(unsigned long int n, buffer_t *buffer);
 
 #endif

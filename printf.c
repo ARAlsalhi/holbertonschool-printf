@@ -11,6 +11,7 @@ int _printf(const char *format, ...)
 	va_list args;
 	int count = 0;
 	int plus_flag, space_flag, hash_flag;
+	char length_mod;
 	buffer_t buffer;
 
 	buffer.index = 0;
@@ -35,6 +36,7 @@ int _printf(const char *format, ...)
 			plus_flag = 0;
 			space_flag = 0;
 			hash_flag = 0;
+			length_mod = '\0';
 
 			while (*format == '+' || *format == ' ' || *format == '#')
 			{
@@ -44,7 +46,12 @@ int _printf(const char *format, ...)
 					space_flag = 1;
 				else if (*format == '#')
 					hash_flag = 1;
+				format++;
+			}
 
+			if (*format == 'l' || *format == 'h')
+			{
+				length_mod = *format;
 				format++;
 			}
 
@@ -67,8 +74,12 @@ int _printf(const char *format, ...)
 					break;
 				case 'd':
 				case 'i':
-					count += print_num_flags(va_arg(args, int), plus_flag,
-						space_flag, &buffer);
+					if (length_mod == 'l')
+						count += print_long_num(va_arg(args, long int), &buffer);
+					else if (length_mod == 'h')
+						count += print_num((short int)va_arg(args, int), &buffer);
+					else
+						count += print_num(va_arg(args, int), &buffer);
 					break;
 				case '%':
 					count += _putchar_buffer(&buffer, '%');
@@ -77,19 +88,48 @@ int _printf(const char *format, ...)
 					count += print_binary(va_arg(args, unsigned int), &buffer);
 					break;
 				case 'u':
-					count += print_unsigned(va_arg(args, unsigned int), &buffer);
+					if (length_mod == 'l')
+						count += print_ulong(va_arg(args,
+							unsigned long int), &buffer);
+					else if (length_mod == 'h')
+						count += print_unsigned((unsigned short int)
+							va_arg(args, unsigned int), &buffer);
+					else
+						count += print_unsigned(va_arg(args,
+							unsigned int), &buffer);
 					break;
 				case 'o':
-					count += print_octal_flag(va_arg(args, unsigned int),
-						hash_flag, &buffer);
+					if (length_mod == 'l')
+						count += print_ulong_octal(va_arg(args,
+							unsigned long int), &buffer);
+					else if (length_mod == 'h')
+						count += print_octal((unsigned short int)
+							va_arg(args, unsigned int), &buffer);
+					else
+						count += print_octal(va_arg(args,
+							unsigned int), &buffer);
 					break;
 				case 'x':
-					count += print_hex_lower_flag(va_arg(args, unsigned int),
-						hash_flag, &buffer);
+					if (length_mod == 'l')
+						count += print_ulong_hex_lower(va_arg(args,
+							unsigned long int), &buffer);
+					else if (length_mod == 'h')
+						count += print_hex_lower((unsigned short int)
+							va_arg(args, unsigned int), &buffer);
+					else
+						count += print_hex_lower(va_arg(args,
+							unsigned int), &buffer);
 					break;
 				case 'X':
-					count += print_hex_upper_flag(va_arg(args, unsigned int),
-						hash_flag, &buffer);
+					if (length_mod == 'l')
+						count += print_ulong_hex_upper(va_arg(args,
+							unsigned long int), &buffer);
+					else if (length_mod == 'h')
+						count += print_hex_upper((unsigned short int)
+							va_arg(args, unsigned int), &buffer);
+					else
+						count += print_hex_upper(va_arg(args,
+							unsigned int), &buffer);
 					break;
 				case 'p':
 					count += print_pointer(va_arg(args, void *), &buffer);
@@ -102,6 +142,8 @@ int _printf(const char *format, ...)
 						count += _putchar_buffer(&buffer, ' ');
 					if (hash_flag)
 						count += _putchar_buffer(&buffer, '#');
+					if (length_mod != '\0')
+						count += _putchar_buffer(&buffer, length_mod);
 					count += _putchar_buffer(&buffer, *format);
 					break;
 			}
