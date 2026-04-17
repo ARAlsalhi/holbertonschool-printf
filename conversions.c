@@ -77,3 +77,41 @@ int print_hex_upper(unsigned int n, buffer_t *buffer)
 
 	return (count);
 }
+
+/**
+ * print_string_custom - prints string with non-printable chars in hex
+ * @string: string to print
+ * @buffer: pointer to buffer structure
+ *
+ * Return: number of characters printed
+ */
+int print_string_custom(char *string, buffer_t *buffer)
+{
+	int count = 0;
+	unsigned char c;
+	char *hex = "0123456789ABCDEF";
+
+	if (string == NULL)
+		string = "(null)";
+
+	while (*string != '\0')
+	{
+		c = (unsigned char)*string;
+
+		if ((c > 0 && c < 32) || c >= 127)
+		{
+			count += _putchar_buffer(buffer, '\\');
+			count += _putchar_buffer(buffer, 'x');
+			count += _putchar_buffer(buffer, hex[c / 16]);
+			count += _putchar_buffer(buffer, hex[c % 16]);
+		}
+		else
+		{
+			count += _putchar_buffer(buffer, c);
+		}
+
+		string++;
+	}
+
+	return (count);
+}
