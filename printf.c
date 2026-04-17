@@ -51,10 +51,20 @@ int _printf(const char *format, ...)
 				format++;
 			}
 
-			while (*format >= '0' && *format <= '9')
+			if (*format == '*')
 			{
-				width = (width * 10) + (*format - '0');
+				width = va_arg(args, int);
+				if (width < 0)
+					width = 0;
 				format++;
+			}
+			else
+			{
+				while (*format >= '0' && *format <= '9')
+				{
+					width = (width * 10) + (*format - '0');
+					format++;
+				}
 			}
 
 			if (*format == 'l' || *format == 'h')
