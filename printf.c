@@ -48,6 +48,18 @@ int _printf(const char *format, ...)
 				case 'b':
 					count += print_binary(va_arg(args, unsigned int));
 					break;
+				case 'u':
+					count += print_unsigned(va_arg(args, unsigned int));
+					break;
+				case 'o':
+					count += print_octal(va_arg(args, unsigned int));
+					break;
+				case 'x':
+					count += print_hex_lower(va_arg(args, unsigned int));
+					break;
+				case 'X':
+					count += print_hex_upper(va_arg(args, unsigned int));
+					break;	
 				default:
 					count += _putchar('%');
 					count += _putchar(*format);
