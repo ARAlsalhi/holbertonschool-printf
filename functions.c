@@ -2,7 +2,7 @@
 
 /**
  * _putchar_buffer - adds a character to the output buffer
- * @buffer: pointer to buffer struct
+ * @buffer: pointer to buffer structure
  * @c: character to add
  *
  * Return: 1
@@ -20,7 +20,7 @@ int _putchar_buffer(buffer_t *buffer, char c)
 
 /**
  * flush_buffer - writes remaining characters in buffer
- * @buffer: pointer to buffer struct
+ * @buffer: pointer to buffer structure
  */
 void flush_buffer(buffer_t *buffer)
 {
@@ -34,7 +34,7 @@ void flush_buffer(buffer_t *buffer)
 /**
  * pString - prints a string
  * @string: string to print
- * @buffer: pointer to buffer struct
+ * @buffer: pointer to buffer structure
  *
  * Return: number of characters printed
  */
@@ -57,7 +57,7 @@ int pString(char *string, buffer_t *buffer)
 /**
  * print_num - prints an integer
  * @n: number to print
- * @buffer: pointer to buffer struct
+ * @buffer: pointer to buffer structure
  *
  * Return: number of characters printed
  */
@@ -87,7 +87,7 @@ int print_num(int n, buffer_t *buffer)
 /**
  * print_unsigned - prints an unsigned integer
  * @n: number to print
- * @buffer: pointer to buffer struct
+ * @buffer: pointer to buffer structure
  *
  * Return: number of characters printed
  */

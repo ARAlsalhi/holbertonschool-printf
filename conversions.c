@@ -3,7 +3,7 @@
 /**
  * print_binary - prints an unsigned int in binary
  * @n: number to print in binary
- * @buffer: pointer to buffer struct
+ * @buffer: pointer to buffer structure
  *
  * Return: number of characters printed
  */
@@ -22,7 +22,7 @@ int print_binary(unsigned int n, buffer_t *buffer)
 /**
  * print_octal - prints an unsigned int in octal
  * @n: number to print in octal
- * @buffer: pointer to buffer struct
+ * @buffer: pointer to buffer structure
  *
  * Return: number of characters printed
  */
@@ -41,7 +41,7 @@ int print_octal(unsigned int n, buffer_t *buffer)
 /**
  * print_hex_lower - prints an unsigned int in lowercase hexadecimal
  * @n: number to print in hexadecimal
- * @buffer: pointer to buffer struct
+ * @buffer: pointer to buffer structure
  *
  * Return: number of characters printed
  */
@@ -61,7 +61,7 @@ int print_hex_lower(unsigned int n, buffer_t *buffer)
 /**
  * print_hex_upper - prints an unsigned int in uppercase hexadecimal
  * @n: number to print in hexadecimal
- * @buffer: pointer to buffer struct
+ * @buffer: pointer to buffer structure
  *
  * Return: number of characters printed
  */
