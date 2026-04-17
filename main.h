@@ -11,8 +11,8 @@
  */
 struct buffer_s
 {
-    char output[1024];
-    int index;
+	char output[1024];
+	int index;
 };
 
 typedef struct buffer_s buffer_t;
