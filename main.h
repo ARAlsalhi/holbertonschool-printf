@@ -43,5 +43,10 @@ int string_len(char *string);
 int unsigned_len(unsigned int n);
 int signed_len(int n);
 int base_len(unsigned int n, int base);
+int print_repeat(buffer_t *buffer, char c, int count);
+int print_string_precision(char *string, int precision, buffer_t *buffer);
+int value_len_precision(unsigned int n, int base, int precision);
+int print_value_precision(unsigned int n, int base, char *digits,
+	int precision, buffer_t *buffer);
 
 #endif

@@ -11,7 +11,8 @@ int _printf(const char *format, ...)
 	va_list args;
 	int count = 0;
 	int plus_flag, space_flag, hash_flag;
-	int width;
+	int width, precision, has_precision;
+	int len, total_len, prefix_len;
 	char length_mod;
 	buffer_t buffer;
 
@@ -38,6 +39,8 @@ int _printf(const char *format, ...)
 			space_flag = 0;
 			hash_flag = 0;
 			width = 0;
+			precision = 0;
+			has_precision = 0;
 			length_mod = '\0';
 
 			while (*format == '+' || *format == ' ' || *format == '#')
@@ -67,6 +70,32 @@ int _printf(const char *format, ...)
 				}
 			}
 
+			if (*format == '.')
+			{
+				has_precision = 1;
+				format++;
+
+				if (*format == '*')
+				{
+					precision = va_arg(args, int);
+					if (precision < 0)
+					{
+						has_precision = 0;
+						precision = 0;
+					}
+					format++;
+				}
+				else
+				{
+					precision = 0;
+					while (*format >= '0' && *format <= '9')
+					{
+						precision = (precision * 10) + (*format - '0');
+						format++;
+					}
+				}
+			}
+
 			if (*format == 'l' || *format == 'h')
 			{
 				length_mod = *format;
@@ -83,8 +112,7 @@ int _printf(const char *format, ...)
 			{
 				case 'c':
 				{
-					int len = 1;
-
+					len = 1;
 					count += print_padding(width, len, &buffer);
 					count += _putchar_buffer(&buffer, va_arg(args, int));
 					break;
@@ -92,10 +120,14 @@ int _printf(const char *format, ...)
 				case 's':
 				{
 					char *str = va_arg(args, char *);
-					int len = string_len(str);
+					len = string_len(str);
+
+					if (has_precision && precision < len)
+						len = precision;
 
 					count += print_padding(width, len, &buffer);
-					count += pString(str, &buffer);
+					count += print_string_precision(str,
+						has_precision ? precision : -1, &buffer);
 					break;
 				}
 				case 'S':
@@ -105,10 +137,33 @@ int _printf(const char *format, ...)
 				case 'i':
 				{
 					int num = va_arg(args, int);
-					int len = signed_len(num);
+					unsigned int abs_num;
 
-					count += print_padding(width, len, &buffer);
-					count += print_num(num, &buffer);
+					if (num < 0)
+						abs_num = (unsigned int)(-num);
+					else
+						abs_num = (unsigned int)num;
+
+					len = value_len_precision(abs_num, 10,
+						has_precision ? precision : -1);
+
+					if (num < 0 || plus_flag || space_flag)
+						total_len = len + 1;
+					else
+						total_len = len;
+
+					count += print_padding(width, total_len, &buffer);
+
+					if (num < 0)
+						count += _putchar_buffer(&buffer, '-');
+					else if (plus_flag)
+						count += _putchar_buffer(&buffer, '+');
+					else if (space_flag)
+						count += _putchar_buffer(&buffer, ' ');
+
+					count += print_value_precision(abs_num, 10,
+						"0123456789",
+						has_precision ? precision : -1, &buffer);
 					break;
 				}
 				case '%':
@@ -121,37 +176,77 @@ int _printf(const char *format, ...)
 				case 'u':
 				{
 					unsigned int num = va_arg(args, unsigned int);
-					int len = unsigned_len(num);
 
+					len = value_len_precision(num, 10,
+						has_precision ? precision : -1);
 					count += print_padding(width, len, &buffer);
-					count += print_unsigned(num, &buffer);
+					count += print_value_precision(num, 10,
+						"0123456789",
+						has_precision ? precision : -1, &buffer);
 					break;
 				}
 				case 'o':
 				{
 					unsigned int num = va_arg(args, unsigned int);
-					int len = base_len(num, 8);
 
-					count += print_padding(width, len, &buffer);
-					count += print_octal(num, &buffer);
+					len = value_len_precision(num, 8,
+						has_precision ? precision : -1);
+					prefix_len = 0;
+
+					if (hash_flag && num != 0 &&
+						(!has_precision || precision <= base_len(num, 8)))
+						prefix_len = 1;
+
+					count += print_padding(width, len + prefix_len, &buffer);
+
+					if (prefix_len)
+						count += _putchar_buffer(&buffer, '0');
+
+					count += print_value_precision(num, 8,
+						"01234567",
+						has_precision ? precision : -1, &buffer);
 					break;
 				}
 				case 'x':
 				{
 					unsigned int num = va_arg(args, unsigned int);
-					int len = base_len(num, 16);
 
-					count += print_padding(width, len, &buffer);
-					count += print_hex_lower(num, &buffer);
+					len = value_len_precision(num, 16,
+						has_precision ? precision : -1);
+					prefix_len = (hash_flag && num != 0) ? 2 : 0;
+
+					count += print_padding(width, len + prefix_len, &buffer);
+
+					if (prefix_len)
+					{
+						count += _putchar_buffer(&buffer, '0');
+						count += _putchar_buffer(&buffer, 'x');
+					}
+
+					count += print_value_precision(num, 16,
+						"0123456789abcdef",
+						has_precision ? precision : -1, &buffer);
 					break;
 				}
 				case 'X':
 				{
 					unsigned int num = va_arg(args, unsigned int);
-					int len = base_len(num, 16);
 
-					count += print_padding(width, len, &buffer);
-					count += print_hex_upper(num, &buffer);
+					len = value_len_precision(num, 16,
+						has_precision ? precision : -1);
+					prefix_len = (hash_flag && num != 0) ? 2 : 0;
+
+					count += print_padding(width, len + prefix_len, &buffer);
+
+					if (prefix_len)
+					{
+						count += _putchar_buffer(&buffer, '0');
+						count += _putchar_buffer(&buffer, 'X');
+					}
+
+					count += print_value_precision(num, 16,
+						"0123456789ABCDEF",
+						has_precision ? precision : -1, &buffer);
 					break;
 				}
 				case 'p':
@@ -165,6 +260,13 @@ int _printf(const char *format, ...)
 						count += _putchar_buffer(&buffer, ' ');
 					if (hash_flag)
 						count += _putchar_buffer(&buffer, '#');
+					if (width > 0)
+						count += print_num(width, &buffer);
+					if (has_precision)
+					{
+						count += _putchar_buffer(&buffer, '.');
+						count += print_num(precision, &buffer);
+					}
 					if (length_mod != '\0')
 						count += _putchar_buffer(&buffer, length_mod);
 					count += _putchar_buffer(&buffer, *format);
