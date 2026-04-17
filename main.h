@@ -38,5 +38,9 @@ int print_ulong(unsigned long int n, buffer_t *buffer);
 int print_ulong_octal(unsigned long int n, buffer_t *buffer);
 int print_ulong_hex_lower(unsigned long int n, buffer_t *buffer);
 int print_ulong_hex_upper(unsigned long int n, buffer_t *buffer);
+int print_padding(int width, int len, buffer_t *buffer);
+int string_len(char *string);
+int unsigned_len(unsigned int n);
+int signed_len(int n);
 
 #endif
