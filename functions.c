@@ -79,3 +79,38 @@ int print_binary(unsigned int n)
 
 	return (count);
 }
+
+/**
+ 
+print_unsigned - prints an unsigned integer
+@n: number to print*
+Return: number of characters printed*/
+int print_unsigned(unsigned int n)
+{
+    int count = 0;
+
+    if (n / 10)
+        count += print_unsigned(n / 10);
+
+    count += _putchar((n % 10) + '0');
+
+    return (count);
+}
+
+//////////////////////////////////////////////////////
+/**
+ 
+print_octal - prints an unsigned int in octal
+@n: number to print in octal*
+Return: number of characters printed*/
+int print_octal(unsigned int n)
+{
+    int count = 0;
+
+    if (n / 8)
+        count += print_octal(n / 8);
+
+    count += _putchar((n % 8) + '0');
+
+    return (count);
+}
