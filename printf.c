@@ -64,6 +64,9 @@ int _printf(const char *format, ...)
 				case 'X':
 					count += print_hex_upper(va_arg(args, unsigned int), &buffer);
 					break;
+				case 'p':
+					count += print_pointer(va_arg(args, void *), &buffer);
+					break;
 				default:
 					count += _putchar_buffer(&buffer, '%');
 					count += _putchar_buffer(&buffer, *format);
