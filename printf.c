@@ -45,6 +45,9 @@ int _printf(const char *format, ...)
 				case '%':
 					count += _putchar('%');
 					break;
+				case 'b':
+					count += print_binary(va_arg(args, unsigned int));
+					break;
 				default:
 					count += _putchar('%');
 					count += _putchar(*format);
