@@ -42,5 +42,6 @@ int print_padding(int width, int len, buffer_t *buffer);
 int string_len(char *string);
 int unsigned_len(unsigned int n);
 int signed_len(int n);
+int base_len(unsigned int n, int base);
 
 #endif

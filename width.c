@@ -20,7 +20,7 @@ int string_len(char *string)
 }
 
 /**
- * unsigned_len - returns length of unsigned int
+ * unsigned_len - returns length of unsigned int in decimal
  * @n: number
  *
  * Return: length
@@ -54,6 +54,26 @@ int signed_len(int n)
 	while (n <= -10 || n >= 10)
 	{
 		n /= 10;
+		len++;
+	}
+
+	return (len);
+}
+
+/**
+ * base_len - returns length of number in a given base
+ * @n: number
+ * @base: base to use
+ *
+ * Return: length
+ */
+int base_len(unsigned int n, int base)
+{
+	int len = 1;
+
+	while (n >= (unsigned int)base)
+	{
+		n /= base;
 		len++;
 	}
 

@@ -130,7 +130,7 @@ int _printf(const char *format, ...)
 				case 'o':
 				{
 					unsigned int num = va_arg(args, unsigned int);
-					int len = unsigned_len(num);
+					int len = base_len(num, 8);
 
 					count += print_padding(width, len, &buffer);
 					count += print_octal(num, &buffer);
@@ -139,7 +139,7 @@ int _printf(const char *format, ...)
 				case 'x':
 				{
 					unsigned int num = va_arg(args, unsigned int);
-					int len = unsigned_len(num);
+					int len = base_len(num, 16);
 
 					count += print_padding(width, len, &buffer);
 					count += print_hex_lower(num, &buffer);
@@ -148,7 +148,7 @@ int _printf(const char *format, ...)
 				case 'X':
 				{
 					unsigned int num = va_arg(args, unsigned int);
-					int len = unsigned_len(num);
+					int len = base_len(num, 16);
 
 					count += print_padding(width, len, &buffer);
 					count += print_hex_upper(num, &buffer);
