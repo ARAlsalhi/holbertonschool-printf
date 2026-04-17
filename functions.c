@@ -114,3 +114,41 @@ int print_octal(unsigned int n)
 
     return (count);
 }
+
+/**
+ * print_hex_lower - prints an unsigned int in lowercase hexadecimal
+ * @n: number to print in hexadecimal
+ *
+ * Return: number of characters printed
+ */
+int print_hex_lower(unsigned int n)
+{
+	int count = 0;
+	char *hex = "0123456789abcdef";
+
+	if (n / 16)
+		count += print_hex_lower(n / 16);
+
+	count += _putchar(hex[n % 16]);
+
+	return (count);
+}
+
+/**
+ * print_hex_upper - prints an unsigned int in uppercase hexadecimal
+ * @n: number to print in hexadecimal
+ *
+ * Return: number of characters printed
+ */
+int print_hex_upper(unsigned int n)
+{
+	int count = 0;
+	char *hex = "0123456789ABCDEF";
+
+	if (n / 16)
+		count += print_hex_upper(n / 16);
+
+	count += _putchar(hex[n % 16]);
+
+	return (count);
+}
