@@ -8,5 +8,5 @@ int _printf(const char *format, ...);
 int _putchar(char c);
 int pString(char *string);
 int print_num(int n);
-
+int print_binary(unsigned int n);
 #endif
