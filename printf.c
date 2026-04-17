@@ -31,19 +31,19 @@ int _printf(const char *format, ...)
 			switch (*format)
 			{
 				case 'c':
-					count += _putchar(va_arg(args, int));
+					count += _putchar_buffer(va_arg(args, int));
 					break;
 				case 's':
 					count += pString(va_arg(args, char *));
 					break;
 				case 'd':
 					count += print_num(va_arg(args, int));
-					break;	
+					break;
 				case 'i':
 					count += print_num(va_arg(args, int));
 					break;
 				case '%':
-					count += _putchar('%');
+					count += _putchar_buffer('%');
 					break;
 				case 'b':
 					count += print_binary(va_arg(args, unsigned int));
@@ -59,21 +59,22 @@ int _printf(const char *format, ...)
 					break;
 				case 'X':
 					count += print_hex_upper(va_arg(args, unsigned int));
-					break;	
+					break;
 				default:
-					count += _putchar('%');
-					count += _putchar(*format);
+					count += _putchar_buffer('%');
+					count += _putchar_buffer(*format);
 					break;
 			}
 		}
 		else
 		{
-			count += _putchar(*format);
+			count += _putchar_buffer(*format);
 		}
 
 		format++;
 	}
 
+	flush_buffer();
 	va_end(args);
 	return (count);
 }
