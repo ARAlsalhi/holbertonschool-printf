@@ -48,5 +48,7 @@ int print_string_precision(char *string, int precision, buffer_t *buffer);
 int value_len_precision(unsigned int n, int base, int precision);
 int print_value_precision(unsigned int n, int base, char *digits,
 	int precision, buffer_t *buffer);
+int print_zero_padding(int width, int len, buffer_t *buffer);
+int number_prefix_len(int num, int plus_flag, int space_flag);
 
 #endif
