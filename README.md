@@ -51,6 +51,7 @@ When it encounters %, it parses:
 
 ## 🔄 Execution Flow
 
+```text
 START
   ↓
 Read format string
@@ -78,7 +79,7 @@ Repeat until end
 Flush buffer
   ↓
 END
-
+```
 
 
 
@@ -179,6 +180,7 @@ _printf("%R", "Hello");   // Uryyb
 
 
 ## 📂 Project Structure
+```text
 .
 ├── main.h
 ├── printf.c
@@ -192,7 +194,7 @@ _printf("%R", "Hello");   // Uryyb
 ├── rot13.c
 ├── man_3_printf
 └── README.md
-
+```
 
 
 
@@ -219,3 +221,5 @@ gcc -Wall -Werror -Wextra -pedantic -Wno-format -std=gnu89 *.c
 ## 🧑‍💻 Authors
 Abdulrhman Alsalhi
 Lama Alzahrani
+
+
