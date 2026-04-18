@@ -170,7 +170,7 @@ int _printf(const char *format, ...)
 					if (num < 0)
 					{
 						sign_char = '-';
-						abs_num = (unsigned int)(-num);
+						abs_num = (unsigned int)(-(long int)num);
 					}
 					else
 					{
@@ -186,26 +186,36 @@ int _printf(const char *format, ...)
 					prefix_len = (sign_char != '\0') ? 1 : 0;
 					total_len = len + prefix_len;
 
-					if (!minus_flag && zero_flag && !has_precision)
+					if (!minus_flag)
 					{
-						if (sign_char != '\0')
-							count += _putchar_buffer(&buffer, sign_char);
-						count += print_zero_padding(width, total_len, &buffer);
-						count += print_value_precision(abs_num, 10,
-							"0123456789",
-							has_precision ? precision : -1, &buffer);
+						if (zero_flag && !has_precision)
+						{
+							if (sign_char != '\0')
+								count += _putchar_buffer(&buffer, sign_char);
+							count += print_zero_padding(width,
+								total_len, &buffer);
+							count += print_value_precision(abs_num, 10,
+								"0123456789",
+								has_precision ? precision : -1, &buffer);
+						}
+						else
+						{
+							count += print_padding(width, total_len, &buffer);
+							if (sign_char != '\0')
+								count += _putchar_buffer(&buffer, sign_char);
+							count += print_value_precision(abs_num, 10,
+								"0123456789",
+								has_precision ? precision : -1, &buffer);
+						}
 					}
 					else
 					{
-						if (!minus_flag)
-							count += print_padding(width, total_len, &buffer);
 						if (sign_char != '\0')
 							count += _putchar_buffer(&buffer, sign_char);
 						count += print_value_precision(abs_num, 10,
 							"0123456789",
 							has_precision ? precision : -1, &buffer);
-						if (minus_flag)
-							count += print_padding(width, total_len, &buffer);
+						count += print_padding(width, total_len, &buffer);
 					}
 					break;
 				}
@@ -252,37 +262,49 @@ int _printf(const char *format, ...)
 				case 'o':
 				{
 					unsigned int num_o = va_arg(args, unsigned int);
+					int raw_len;
 
 					len = value_len_precision(num_o, 8,
 						has_precision ? precision : -1);
+					raw_len = base_len(num_o, 8);
 					prefix_len = 0;
 
 					if (hash_flag && num_o != 0 &&
-						(!has_precision || precision <= base_len(num_o, 8)))
+						(!has_precision || precision <= raw_len))
 						prefix_len = 1;
 
 					total_len = len + prefix_len;
 
-					if (!minus_flag && zero_flag && !has_precision)
+					if (!minus_flag)
 					{
-						if (prefix_len)
-							count += _putchar_buffer(&buffer, '0');
-						count += print_zero_padding(width, total_len, &buffer);
-						count += print_value_precision(num_o, 8,
-							"01234567",
-							has_precision ? precision : -1, &buffer);
+						if (zero_flag && !has_precision)
+						{
+							if (prefix_len)
+								count += _putchar_buffer(&buffer, '0');
+							count += print_zero_padding(width,
+								total_len, &buffer);
+							count += print_value_precision(num_o, 8,
+								"01234567",
+								has_precision ? precision : -1, &buffer);
+						}
+						else
+						{
+							count += print_padding(width, total_len, &buffer);
+							if (prefix_len)
+								count += _putchar_buffer(&buffer, '0');
+							count += print_value_precision(num_o, 8,
+								"01234567",
+								has_precision ? precision : -1, &buffer);
+						}
 					}
 					else
 					{
-						if (!minus_flag)
-							count += print_padding(width, total_len, &buffer);
 						if (prefix_len)
 							count += _putchar_buffer(&buffer, '0');
 						count += print_value_precision(num_o, 8,
 							"01234567",
 							has_precision ? precision : -1, &buffer);
-						if (minus_flag)
-							count += print_padding(width, total_len, &buffer);
+						count += print_padding(width, total_len, &buffer);
 					}
 					break;
 				}
@@ -295,22 +317,36 @@ int _printf(const char *format, ...)
 					prefix_len = (hash_flag && num_x != 0) ? 2 : 0;
 					total_len = len + prefix_len;
 
-					if (!minus_flag && zero_flag && !has_precision)
+					if (!minus_flag)
 					{
-						if (prefix_len)
+						if (zero_flag && !has_precision)
 						{
-							count += _putchar_buffer(&buffer, '0');
-							count += _putchar_buffer(&buffer, 'x');
+							if (prefix_len)
+							{
+								count += _putchar_buffer(&buffer, '0');
+								count += _putchar_buffer(&buffer, 'x');
+							}
+							count += print_zero_padding(width,
+								total_len, &buffer);
+							count += print_value_precision(num_x, 16,
+								"0123456789abcdef",
+								has_precision ? precision : -1, &buffer);
 						}
-						count += print_zero_padding(width, total_len, &buffer);
-						count += print_value_precision(num_x, 16,
-							"0123456789abcdef",
-							has_precision ? precision : -1, &buffer);
+						else
+						{
+							count += print_padding(width, total_len, &buffer);
+							if (prefix_len)
+							{
+								count += _putchar_buffer(&buffer, '0');
+								count += _putchar_buffer(&buffer, 'x');
+							}
+							count += print_value_precision(num_x, 16,
+								"0123456789abcdef",
+								has_precision ? precision : -1, &buffer);
+						}
 					}
 					else
 					{
-						if (!minus_flag)
-							count += print_padding(width, total_len, &buffer);
 						if (prefix_len)
 						{
 							count += _putchar_buffer(&buffer, '0');
@@ -319,8 +355,7 @@ int _printf(const char *format, ...)
 						count += print_value_precision(num_x, 16,
 							"0123456789abcdef",
 							has_precision ? precision : -1, &buffer);
-						if (minus_flag)
-							count += print_padding(width, total_len, &buffer);
+						count += print_padding(width, total_len, &buffer);
 					}
 					break;
 				}
@@ -333,22 +368,36 @@ int _printf(const char *format, ...)
 					prefix_len = (hash_flag && num_xu != 0) ? 2 : 0;
 					total_len = len + prefix_len;
 
-					if (!minus_flag && zero_flag && !has_precision)
+					if (!minus_flag)
 					{
-						if (prefix_len)
+						if (zero_flag && !has_precision)
 						{
-							count += _putchar_buffer(&buffer, '0');
-							count += _putchar_buffer(&buffer, 'X');
+							if (prefix_len)
+							{
+								count += _putchar_buffer(&buffer, '0');
+								count += _putchar_buffer(&buffer, 'X');
+							}
+							count += print_zero_padding(width,
+								total_len, &buffer);
+							count += print_value_precision(num_xu, 16,
+								"0123456789ABCDEF",
+								has_precision ? precision : -1, &buffer);
 						}
-						count += print_zero_padding(width, total_len, &buffer);
-						count += print_value_precision(num_xu, 16,
-							"0123456789ABCDEF",
-							has_precision ? precision : -1, &buffer);
+						else
+						{
+							count += print_padding(width, total_len, &buffer);
+							if (prefix_len)
+							{
+								count += _putchar_buffer(&buffer, '0');
+								count += _putchar_buffer(&buffer, 'X');
+							}
+							count += print_value_precision(num_xu, 16,
+								"0123456789ABCDEF",
+								has_precision ? precision : -1, &buffer);
+						}
 					}
 					else
 					{
-						if (!minus_flag)
-							count += print_padding(width, total_len, &buffer);
 						if (prefix_len)
 						{
 							count += _putchar_buffer(&buffer, '0');
@@ -357,8 +406,7 @@ int _printf(const char *format, ...)
 						count += print_value_precision(num_xu, 16,
 							"0123456789ABCDEF",
 							has_precision ? precision : -1, &buffer);
-						if (minus_flag)
-							count += print_padding(width, total_len, &buffer);
+						count += print_padding(width, total_len, &buffer);
 					}
 					break;
 				}
