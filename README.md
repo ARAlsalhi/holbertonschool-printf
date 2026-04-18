@@ -9,37 +9,38 @@ The goal is to recreate the behavior of `printf` while understanding:
 - Buffering
 - Low-level output using `write`
 
----
+
 
 ## ⚙️ Prototype
-```c
+
 int _printf(const char *format, ...);
 
 
-📊 Project Breakdown
+## 📊 Project Breakdown
 
-Task	    Type	            Description
+| Task | Type      | Description                                                 |
+| ---- | --------- | ----------------------------------------------------------- |
+| 0    | Mandatory | Write a function that produces output according to a format |
+| 1    | Mandatory | Handle specifiers: `d`, `i`                                 |
+| 2    | Mandatory | Create a man page                                           |
+| 3    | Advanced  | Handle specifier: `b` (binary)                              |
+| 4    | Advanced  | Handle specifiers: `u`, `o`, `x`, `X`                       |
+| 5    | Advanced  | Implement buffer (1024 chars)                               |
+| 6    | Advanced  | Handle specifier: `S`                                       |
+| 7    | Advanced  | Handle specifier: `p`                                       |
+| 8    | Advanced  | Handle flags: `+`, `space`, `#`                             |
+| 9    | Advanced  | Handle length modifiers: `l`, `h`                           |
+| 10   | Advanced  | Handle field width                                          |
+| 11   | Advanced  | Handle precision                                            |
+| 12   | Advanced  | Handle flag: `0`                                            |
+| 13   | Advanced  | Handle flag: `-`                                            |
+| 14   | Advanced  | Handle specifier: `r` (reverse)                             |
+| 15   | Advanced  | Handle specifier: `R` (rot13)                               |
+| 16   | Advanced  | Integrate all features together                             |
 
-0	        Mandatory	        Write a function that produces output according to a format
-1	        Mandatory	        Handle specifiers: d, i
-2	        Mandatory	        Create a man page
-3	        Advanced	        Handle specifier: b (binary)
-4	        Advanced	        Handle specifiers: u, o, x, X
-5	        Advanced	        Implement buffer (1024 chars)
-6	        Advanced	        Handle specifier: S
-7	        Advanced	        Handle specifier: p
-8	        Advanced	        Handle flags: +, space, #
-9	        Advanced	        Handle length modifiers: l, h
-10	        Advanced	        Handle field width
-11	        Advanced	        Handle precision
-12	        Advanced	        Handle flag: 0
-13	        Advanced	        Handle flag: -
-14	        Advanced	        Handle specifier: r (reverse)
-15	        Advanced	        Handle specifier: R (rot13)
-16	        Advanced	        Integrate all features together
 
 
-🧠 How It Works
+## 🧠 How It Works
 The _printf function reads the format string character by character.
 When it encounters %, it parses:
 
@@ -48,7 +49,7 @@ When it encounters %, it parses:
 
 
 
-🔄 Execution Flow
+## 🔄 Execution Flow
 
 START
   ↓
@@ -81,39 +82,42 @@ END
 
 
 
-🧩 Supported Specifiers
+## 🧩 Supported Specifiers
 
-Specifier   | 	 Description
-            | 
-%c	        |    Character
-%s	        |    String
-%%	        |    Percent
-%d, %i	    |    Signed integer
-%u	        |    Unsigned integer
-%o	        |    Octal
-%x	        |    Hex (lowercase)
-%X	        |    Hex (uppercase)
-%p	        |    Pointer
-%b	        |    Binary
-%S	        |    String (non-printable → hex)
-%r	        |    Reversed string
-%R	        |    ROT13 string
-
-
-
-
-🚩 Flags
-
-Specifier   | 	Description
-+	        |   Show sign
-space	    |   Space before positive
-#	        |   Alternate form
-0	        |   Zero padding
--	        |   Left align
+| Specifier  | Description                  |
+| ---------- | ---------------------------- |
+| `%c`       | Character                    |
+| `%s`       | String                       |
+| `%%`       | Percent                      |
+| `%d`, `%i` | Signed integer               |
+| `%u`       | Unsigned integer             |
+| `%o`       | Octal                        |
+| `%x`       | Hexadecimal (lowercase)      |
+| `%X`       | Hexadecimal (uppercase)      |
+| `%p`       | Pointer                      |
+| `%b`       | Binary                       |
+| `%S`       | String (non-printable → hex) |
+| `%r`       | Reversed string              |
+| `%R`       | ROT13 string                 |
 
 
 
-📏 Width
+
+
+## 🚩 Flags
+
+| Flag | Description                   |
+| ---- | ----------------------------- |
+| `+`  | Show sign                     |
+| ` `  | Space before positive numbers |
+| `#`  | Alternate form                |
+| `0`  | Zero padding                  |
+| `-`  | Left align                    |
+
+
+
+
+## 📏 Width
 
 _printf("%5d", 42);
 
@@ -124,7 +128,7 @@ Output:
 
 
 
-🎯 Precision
+## 🎯 Precision
 
 _printf("%.4d", 42);
 
@@ -134,23 +138,25 @@ Output:
 
 
 
-🔠 Length Modifiers
+## 🔠 Length Modifiers
 
-Meaning         Modifier	
-h	        |   short
-l	        |   long
+| Modifier | Meaning |
+| -------- | ------- |
+| `h`      | short   |
+| `l`      | long    |
 
 
 
 
-⚡ Buffering
+
+## ⚡ Buffering
 - Uses a buffer of 1024 characters
 - Reduces system calls to write
 - Improves performance
 
 
 
-⚠️ Edge Cases
+## ⚠️ Edge Cases
 NULL string → "(null)"
 NULL pointer → "(nil)"
 precision = 0 and value = 0 → prints nothing
@@ -160,7 +166,7 @@ precision = 0 and value = 0 → prints nothing
 
 
 
-🧪 Examples
+## 🧪 Examples
 _printf("%d", -42);       // -42
 _printf("%+d", 42);       // +42
 _printf("%05d", 42);      // 00042
@@ -172,7 +178,7 @@ _printf("%R", "Hello");   // Uryyb
 
 
 
-📂 Project Structure
+## 📂 Project Structure
 .
 ├── main.h
 ├── printf.c
@@ -190,7 +196,7 @@ _printf("%R", "Hello");   // Uryyb
 
 
 
-🚀 Compilation and Use
+## 🚀 Compilation and Use
 
 1-Clone the repository:
 
@@ -210,6 +216,6 @@ gcc -Wall -Werror -Wextra -pedantic -Wno-format -std=gnu89 *.c
 
 
 
-🧑‍💻 Authors
+## 🧑‍💻 Authors
 Abdulrhman Alsalhi
 Lama Alzahrani
