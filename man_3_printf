@@ -197,7 +197,7 @@ Returns -1 in case of error, such as:
 - '+' overrides space
 
 .SH EXAMPLES
-
+.EX
 _printf("%c", 'A');                -> A
 _printf("%s", "Hello");            -> Hello
 _printf("%d", -42);                -> -42
@@ -213,6 +213,7 @@ _printf("%b", 5);                  -> 101
 _printf("%r", "Hello");            -> olleH
 _printf("%R", "Hello");            -> Uryyb
 _printf("%p", ptr);                -> 0x...
+.EE
 
 .SH LIMITATIONS
 
