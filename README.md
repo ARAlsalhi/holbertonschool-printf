@@ -158,16 +158,18 @@ Output:
 
 
 ## ⚠️ Edge Cases
+```text
 NULL string → "(null)"
 NULL pointer → "(nil)"
 precision = 0 and value = 0 → prints nothing
 - overrides 0
 + overrides space
-
+```
 
 
 
 ## 🧪 Examples
+```text
 _printf("%d", -42);       // -42
 _printf("%+d", 42);       // +42
 _printf("%05d", 42);      // 00042
@@ -175,7 +177,7 @@ _printf("%-5d", 42);      // 42
 _printf("%#x", 255);      // 0xff
 _printf("%r", "Hello");   // olleH
 _printf("%R", "Hello");   // Uryyb
-
+```
 
 
 
