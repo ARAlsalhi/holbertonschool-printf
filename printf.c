@@ -12,7 +12,7 @@ int _printf(const char *format, ...)
 	int count = 0;
 	int plus_flag, space_flag, hash_flag, zero_flag, minus_flag;
 	int width, precision, has_precision;
-	int len, total_len, prefix_len;
+	int len, total_len, prefix_len, raw_len;
 	char length_mod;
 	buffer_t buffer;
 
@@ -163,26 +163,55 @@ int _printf(const char *format, ...)
 				case 'd':
 				case 'i':
 				{
-					int num = va_arg(args, int);
-					unsigned int abs_num;
+					long int num;
+					unsigned long int abs_num;
 					char sign_char = '\0';
+
+					if (length_mod == 'l')
+						num = va_arg(args, long int);
+					else if (length_mod == 'h')
+						num = (short int)va_arg(args, int);
+					else
+						num = va_arg(args, int);
 
 					if (num < 0)
 					{
 						sign_char = '-';
-						abs_num = (unsigned int)(-(long int)num);
+						abs_num = (unsigned long int)(-(num + 1)) + 1;
 					}
 					else
 					{
-						abs_num = (unsigned int)num;
+						abs_num = (unsigned long int)num;
 						if (plus_flag)
 							sign_char = '+';
 						else if (space_flag)
 							sign_char = ' ';
 					}
 
-					len = value_len_precision(abs_num, 10,
-						has_precision ? precision : -1);
+					if (has_precision && precision == 0 && abs_num == 0)
+						raw_len = 0;
+					else
+					{
+						raw_len = 1;
+						while (abs_num / 10 >= (unsigned long int)raw_len &&
+							raw_len < 20)
+							break;
+						raw_len = 1;
+						{
+							unsigned long int temp = abs_num;
+
+							while (temp >= 10)
+							{
+								temp /= 10;
+								raw_len++;
+							}
+						}
+					}
+
+					len = raw_len;
+					if (has_precision && precision > len)
+						len = precision;
+
 					prefix_len = (sign_char != '\0') ? 1 : 0;
 					total_len = len + prefix_len;
 
@@ -194,29 +223,34 @@ int _printf(const char *format, ...)
 								count += _putchar_buffer(&buffer, sign_char);
 							count += print_zero_padding(width,
 								total_len, &buffer);
-							count += print_value_precision(abs_num, 10,
-								"0123456789",
-								has_precision ? precision : -1, &buffer);
 						}
 						else
 						{
 							count += print_padding(width, total_len, &buffer);
 							if (sign_char != '\0')
 								count += _putchar_buffer(&buffer, sign_char);
-							count += print_value_precision(abs_num, 10,
-								"0123456789",
-								has_precision ? precision : -1, &buffer);
 						}
 					}
-					else
+					else if (sign_char != '\0')
 					{
-						if (sign_char != '\0')
-							count += _putchar_buffer(&buffer, sign_char);
-						count += print_value_precision(abs_num, 10,
-							"0123456789",
-							has_precision ? precision : -1, &buffer);
-						count += print_padding(width, total_len, &buffer);
+						count += _putchar_buffer(&buffer, sign_char);
 					}
+
+					if (!(has_precision && precision == 0 && abs_num == 0))
+					{
+						if (has_precision && precision > raw_len)
+							count += print_repeat(&buffer, '0',
+								precision - raw_len);
+
+						if (length_mod == 'l')
+							count += print_ulong(abs_num, &buffer);
+						else
+							count += print_unsigned((unsigned int)abs_num,
+								&buffer);
+					}
+
+					if (minus_flag)
+						count += print_padding(width, total_len, &buffer);
 					break;
 				}
 				case '%':
@@ -240,10 +274,35 @@ int _printf(const char *format, ...)
 					break;
 				case 'u':
 				{
-					unsigned int num_u = va_arg(args, unsigned int);
+					unsigned long int num_u;
 
-					len = value_len_precision(num_u, 10,
-						has_precision ? precision : -1);
+					if (length_mod == 'l')
+						num_u = va_arg(args, unsigned long int);
+					else if (length_mod == 'h')
+						num_u = (unsigned short int)
+							va_arg(args, unsigned int);
+					else
+						num_u = va_arg(args, unsigned int);
+
+					if (has_precision && precision == 0 && num_u == 0)
+						raw_len = 0;
+					else
+					{
+						raw_len = 1;
+						{
+							unsigned long int temp = num_u;
+
+							while (temp >= 10)
+							{
+								temp /= 10;
+								raw_len++;
+							}
+						}
+					}
+
+					len = raw_len;
+					if (has_precision && precision > len)
+						len = precision;
 
 					if (!minus_flag)
 					{
@@ -252,23 +311,57 @@ int _printf(const char *format, ...)
 						else
 							count += print_padding(width, len, &buffer);
 					}
-					count += print_value_precision(num_u, 10,
-						"0123456789",
-						has_precision ? precision : -1, &buffer);
+
+					if (!(has_precision && precision == 0 && num_u == 0))
+					{
+						if (has_precision && precision > raw_len)
+							count += print_repeat(&buffer, '0',
+								precision - raw_len);
+
+						if (length_mod == 'l')
+							count += print_ulong(num_u, &buffer);
+						else
+							count += print_unsigned((unsigned int)num_u,
+								&buffer);
+					}
+
 					if (minus_flag)
 						count += print_padding(width, len, &buffer);
 					break;
 				}
 				case 'o':
 				{
-					unsigned int num_o = va_arg(args, unsigned int);
-					int raw_len;
+					unsigned long int num_o;
 
-					len = value_len_precision(num_o, 8,
-						has_precision ? precision : -1);
-					raw_len = base_len(num_o, 8);
+					if (length_mod == 'l')
+						num_o = va_arg(args, unsigned long int);
+					else if (length_mod == 'h')
+						num_o = (unsigned short int)
+							va_arg(args, unsigned int);
+					else
+						num_o = va_arg(args, unsigned int);
+
+					if (has_precision && precision == 0 && num_o == 0)
+						raw_len = 0;
+					else
+					{
+						raw_len = 1;
+						{
+							unsigned long int temp = num_o;
+
+							while (temp >= 8)
+							{
+								temp /= 8;
+								raw_len++;
+							}
+						}
+					}
+
+					len = raw_len;
+					if (has_precision && precision > len)
+						len = precision;
+
 					prefix_len = 0;
-
 					if (hash_flag && num_o != 0 &&
 						(!has_precision || precision <= raw_len))
 						prefix_len = 1;
@@ -283,37 +376,68 @@ int _printf(const char *format, ...)
 								count += _putchar_buffer(&buffer, '0');
 							count += print_zero_padding(width,
 								total_len, &buffer);
-							count += print_value_precision(num_o, 8,
-								"01234567",
-								has_precision ? precision : -1, &buffer);
 						}
 						else
 						{
 							count += print_padding(width, total_len, &buffer);
 							if (prefix_len)
 								count += _putchar_buffer(&buffer, '0');
-							count += print_value_precision(num_o, 8,
-								"01234567",
-								has_precision ? precision : -1, &buffer);
 						}
 					}
-					else
+					else if (prefix_len)
 					{
-						if (prefix_len)
-							count += _putchar_buffer(&buffer, '0');
-						count += print_value_precision(num_o, 8,
-							"01234567",
-							has_precision ? precision : -1, &buffer);
-						count += print_padding(width, total_len, &buffer);
+						count += _putchar_buffer(&buffer, '0');
 					}
+
+					if (!(has_precision && precision == 0 && num_o == 0))
+					{
+						if (has_precision && precision > raw_len)
+							count += print_repeat(&buffer, '0',
+								precision - raw_len);
+
+						if (length_mod == 'l')
+							count += print_ulong_octal(num_o, &buffer);
+						else
+							count += print_octal((unsigned int)num_o,
+								&buffer);
+					}
+
+					if (minus_flag)
+						count += print_padding(width, total_len, &buffer);
 					break;
 				}
 				case 'x':
 				{
-					unsigned int num_x = va_arg(args, unsigned int);
+					unsigned long int num_x;
 
-					len = value_len_precision(num_x, 16,
-						has_precision ? precision : -1);
+					if (length_mod == 'l')
+						num_x = va_arg(args, unsigned long int);
+					else if (length_mod == 'h')
+						num_x = (unsigned short int)
+							va_arg(args, unsigned int);
+					else
+						num_x = va_arg(args, unsigned int);
+
+					if (has_precision && precision == 0 && num_x == 0)
+						raw_len = 0;
+					else
+					{
+						raw_len = 1;
+						{
+							unsigned long int temp = num_x;
+
+							while (temp >= 16)
+							{
+								temp /= 16;
+								raw_len++;
+							}
+						}
+					}
+
+					len = raw_len;
+					if (has_precision && precision > len)
+						len = precision;
+
 					prefix_len = (hash_flag && num_x != 0) ? 2 : 0;
 					total_len = len + prefix_len;
 
@@ -328,9 +452,6 @@ int _printf(const char *format, ...)
 							}
 							count += print_zero_padding(width,
 								total_len, &buffer);
-							count += print_value_precision(num_x, 16,
-								"0123456789abcdef",
-								has_precision ? precision : -1, &buffer);
 						}
 						else
 						{
@@ -340,31 +461,63 @@ int _printf(const char *format, ...)
 								count += _putchar_buffer(&buffer, '0');
 								count += _putchar_buffer(&buffer, 'x');
 							}
-							count += print_value_precision(num_x, 16,
-								"0123456789abcdef",
-								has_precision ? precision : -1, &buffer);
 						}
 					}
-					else
+					else if (prefix_len)
 					{
-						if (prefix_len)
-						{
-							count += _putchar_buffer(&buffer, '0');
-							count += _putchar_buffer(&buffer, 'x');
-						}
-						count += print_value_precision(num_x, 16,
-							"0123456789abcdef",
-							has_precision ? precision : -1, &buffer);
-						count += print_padding(width, total_len, &buffer);
+						count += _putchar_buffer(&buffer, '0');
+						count += _putchar_buffer(&buffer, 'x');
 					}
+
+					if (!(has_precision && precision == 0 && num_x == 0))
+					{
+						if (has_precision && precision > raw_len)
+							count += print_repeat(&buffer, '0',
+								precision - raw_len);
+
+						if (length_mod == 'l')
+							count += print_ulong_hex_lower(num_x, &buffer);
+						else
+							count += print_hex_lower((unsigned int)num_x,
+								&buffer);
+					}
+
+					if (minus_flag)
+						count += print_padding(width, total_len, &buffer);
 					break;
 				}
 				case 'X':
 				{
-					unsigned int num_xu = va_arg(args, unsigned int);
+					unsigned long int num_xu;
 
-					len = value_len_precision(num_xu, 16,
-						has_precision ? precision : -1);
+					if (length_mod == 'l')
+						num_xu = va_arg(args, unsigned long int);
+					else if (length_mod == 'h')
+						num_xu = (unsigned short int)
+							va_arg(args, unsigned int);
+					else
+						num_xu = va_arg(args, unsigned int);
+
+					if (has_precision && precision == 0 && num_xu == 0)
+						raw_len = 0;
+					else
+					{
+						raw_len = 1;
+						{
+							unsigned long int temp = num_xu;
+
+							while (temp >= 16)
+							{
+								temp /= 16;
+								raw_len++;
+							}
+						}
+					}
+
+					len = raw_len;
+					if (has_precision && precision > len)
+						len = precision;
+
 					prefix_len = (hash_flag && num_xu != 0) ? 2 : 0;
 					total_len = len + prefix_len;
 
@@ -379,9 +532,6 @@ int _printf(const char *format, ...)
 							}
 							count += print_zero_padding(width,
 								total_len, &buffer);
-							count += print_value_precision(num_xu, 16,
-								"0123456789ABCDEF",
-								has_precision ? precision : -1, &buffer);
 						}
 						else
 						{
@@ -391,23 +541,29 @@ int _printf(const char *format, ...)
 								count += _putchar_buffer(&buffer, '0');
 								count += _putchar_buffer(&buffer, 'X');
 							}
-							count += print_value_precision(num_xu, 16,
-								"0123456789ABCDEF",
-								has_precision ? precision : -1, &buffer);
 						}
 					}
-					else
+					else if (prefix_len)
 					{
-						if (prefix_len)
-						{
-							count += _putchar_buffer(&buffer, '0');
-							count += _putchar_buffer(&buffer, 'X');
-						}
-						count += print_value_precision(num_xu, 16,
-							"0123456789ABCDEF",
-							has_precision ? precision : -1, &buffer);
-						count += print_padding(width, total_len, &buffer);
+						count += _putchar_buffer(&buffer, '0');
+						count += _putchar_buffer(&buffer, 'X');
 					}
+
+					if (!(has_precision && precision == 0 && num_xu == 0))
+					{
+						if (has_precision && precision > raw_len)
+							count += print_repeat(&buffer, '0',
+								precision - raw_len);
+
+						if (length_mod == 'l')
+							count += print_ulong_hex_upper(num_xu, &buffer);
+						else
+							count += print_hex_upper((unsigned int)num_xu,
+								&buffer);
+					}
+
+					if (minus_flag)
+						count += print_padding(width, total_len, &buffer);
 					break;
 				}
 				case 'p':
@@ -418,8 +574,16 @@ int _printf(const char *format, ...)
 					if (ptr == NULL)
 						ptr_len = 5;
 					else
-						ptr_len = 2 + base_len((unsigned int)
-							(unsigned long int)ptr, 16);
+					{
+						unsigned long int pval = (unsigned long int)ptr;
+
+						ptr_len = 2;
+						while (pval >= 16)
+						{
+							pval /= 16;
+							ptr_len++;
+						}
+					}
 
 					if (!minus_flag)
 						count += print_padding(width, ptr_len, &buffer);
