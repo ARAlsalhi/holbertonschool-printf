@@ -15,9 +15,6 @@ The goal is to recreate the behavior of `printf` while understanding:
 ```c
 int _printf(const char *format, ...);
 
-
-
-
 📊 Project Breakdown
 
 Task	    Type	            Description
@@ -184,10 +181,10 @@ _printf("%R", "Hello");   // Uryyb
 ├── flags.c
 ├── width.c
 ├── precision.c
-├── buffer.c
 ├── reverse.c
 ├── rot13.c
-└── man_3_printf
+├── man_3_printf
+└── README.md
 
 
 
