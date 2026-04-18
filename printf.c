@@ -568,20 +568,21 @@ int _printf(const char *format, ...)
 				}
 				case 'p':
 				{
-					int ptr_len = 0;
+					int ptr_len;
 					void *ptr = va_arg(args, void *);
+					unsigned long int pval; 
 
 					if (ptr == NULL)
 						ptr_len = 5;
 					else
 					{
-						unsigned long int pval = (unsigned long int)ptr;
-
+						pval = (unsigned long int)ptr;
 						ptr_len = 2;
-						while (pval >= 16)
+						
+						while (pval > 0)
 						{
-							pval /= 16;
 							ptr_len++;
+							pval /= 16;
 						}
 					}
 
