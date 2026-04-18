@@ -157,6 +157,9 @@ int _printf(const char *format, ...)
 				case 'r':
 					count += print_reverse(va_arg(args, char *), &buffer);
 					break;
+				case 'R':
+					count += print_rot13(va_arg(args, char *), &buffer);
+					break;
 				case 'd':
 				case 'i':
 				{
