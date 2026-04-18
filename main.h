@@ -50,5 +50,6 @@ int print_value_precision(unsigned int n, int base, char *digits,
 	int precision, buffer_t *buffer);
 int print_zero_padding(int width, int len, buffer_t *buffer);
 int number_prefix_len(int num, int plus_flag, int space_flag);
+int print_reverse(char *string, buffer_t *buffer);
 
 #endif

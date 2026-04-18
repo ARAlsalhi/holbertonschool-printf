@@ -154,6 +154,9 @@ int _printf(const char *format, ...)
 				case 'S':
 					count += print_string_custom(va_arg(args, char *), &buffer);
 					break;
+				case 'r':
+					count += print_reverse(va_arg(args, char *), &buffer);
+					break;
 				case 'd':
 				case 'i':
 				{
