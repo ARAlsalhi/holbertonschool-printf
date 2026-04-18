@@ -12,10 +12,12 @@ The goal is to recreate the behavior of `printf` while understanding:
 ---
 
 ## ⚙️ Prototype
-```c
+```
 int _printf(const char *format, ...);
 
-📊 Project Breakdown
+---
+
+## 📊 Project Breakdown
 
 Task	    Type	            Description
 
@@ -37,17 +39,18 @@ Task	    Type	            Description
 15	        Advanced	        Handle specifier: R (rot13)
 16	        Advanced	        Integrate all features together
 
+---
 
-🧠 How It Works
+## 🧠 How It Works
 The _printf function reads the format string character by character.
 When it encounters %, it parses:
 
 %[flags][width][.precision][length]specifier
 
 
+---
 
-
-🔄 Execution Flow
+## 🔄 Execution Flow
 
 START
   ↓
@@ -78,9 +81,9 @@ Flush buffer
 END
 
 
+---
 
-
-🧩 Supported Specifiers
+## 🧩 Supported Specifiers
 
 Specifier   | 	 Description
             | 
@@ -99,9 +102,9 @@ Specifier   | 	 Description
 %R	        |    ROT13 string
 
 
+---
 
-
-🚩 Flags
+## 🚩 Flags
 
 Specifier   | 	Description
 +	        |   Show sign
@@ -110,9 +113,9 @@ space	    |   Space before positive
 0	        |   Zero padding
 -	        |   Left align
 
+---
 
-
-📏 Width
+## 📏 Width
 
 _printf("%5d", 42);
 
@@ -120,10 +123,10 @@ Output:
     42
 
 
+---
 
 
-
-🎯 Precision
+## 🎯 Precision
 
 _printf("%.4d", 42);
 
@@ -131,25 +134,26 @@ Output:
 0042
 
 
+---
 
-
-🔠 Length Modifiers
+## 🔠 Length Modifiers
 
 Meaning         Modifier	
 h	        |   short
 l	        |   long
 
 
+---
 
 
-⚡ Buffering
+## ⚡ Buffering
 - Uses a buffer of 1024 characters
 - Reduces system calls to write
 - Improves performance
 
+---
 
-
-⚠️ Edge Cases
+## ⚠️ Edge Cases
 NULL string → "(null)"
 NULL pointer → "(nil)"
 precision = 0 and value = 0 → prints nothing
@@ -157,9 +161,9 @@ precision = 0 and value = 0 → prints nothing
 + overrides space
 
 
+---
 
-
-🧪 Examples
+## 🧪 Examples
 _printf("%d", -42);       // -42
 _printf("%+d", 42);       // +42
 _printf("%05d", 42);      // 00042
@@ -169,9 +173,9 @@ _printf("%r", "Hello");   // olleH
 _printf("%R", "Hello");   // Uryyb
 
 
+---
 
-
-📂 Project Structure
+## 📂 Project Structure
 .
 ├── main.h
 ├── printf.c
@@ -187,9 +191,10 @@ _printf("%R", "Hello");   // Uryyb
 └── README.md
 
 
+---
 
 
-🚀 Compilation and Use
+## 🚀 Compilation and Use
 
 1-Clone the repository:
 
@@ -207,8 +212,13 @@ gcc -Wall -Werror -Wextra -pedantic -Wno-format -std=gnu89 *.c
 
 ./a.out
 
+---
 
-
-🧑‍💻 Authors
+## 🧑‍💻 Authors
 Abdulrhman Alsalhi
 Lama Alzahrani
+
+
+---c
+
+
